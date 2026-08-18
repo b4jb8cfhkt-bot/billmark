@@ -18,3 +18,7 @@ node --check lib/bill-data.js
 ```
 
 The runtime fetches the official `leginfo.legislature.ca.gov` bill record. If that source is unavailable, the API returns a clear unavailable-source response rather than inventing bill data.
+
+## Optional AI summary
+
+Set `AI_GATEWAY_API_KEY` in the Vercel project to enable a server-side AI summary. Without it, BillMark uses the extracted official Legislative Counsel’s Digest. [AI Gateway setup](https://vercel.com/docs/ai-gateway/sdks-and-apis/openai-chat-completions).
