@@ -1,37 +1,53 @@
 function normalize(input){
- const s=String(input||"").toUpperCase().replace(/\s+/g,"");
- const m=s.match(/^(AB|SB|ACR|AJR|ACA|SCR|SJR|SCA|HR|SR|HCR|HJR)(\d+)$/);
- if(!m) throw new Error("Enter a California bill number, such as AB 222 or SB 123.");
- return {house:m[1],number:m[2]};
+  const s=String(input||"").toUpperCase().replace(/\s+/g,"");
+  const m=s.match(/^(AB|SB|ACR|AJR|ACA|SCR|SJR|SCA|HR|SR|HCR|HJR)(\d+)$/);
+  if(!m) throw new Error("Enter a California bill number, such as AB 222.");
+  return {house:m[1],number:m[2]};
 }
-function strip(s){
- return s.replace(/<script[\s\S]*?<\/script>/gi," ").replace(/<style[\s\S]*?<\/style>/gi," ").replace(/<[^>]+>/g," ")
- .replace(/&nbsp;/g," ").replace(/&amp;/g,"&").replace(/&quot;/g,'"').replace(/&#39;/g,"'").replace(/\s+/g," ").trim();
+function text(html){
+  return html
+   .replace(/<script[\s\S]*?<\/script>/gi," ")
+   .replace(/<style[\s\S]*?<\/style>/gi," ")
+   .replace(/<[^>]+>/g," ")
+   .replace(/&nbsp;/gi," ").replace(/&amp;/gi,"&")
+   .replace(/&quot;/gi,'"').replace(/&#39;/gi,"'")
+   .replace(/\s+/g," ").trim();
 }
-function pick(re,t){const m=t.match(re);return m?m[1].trim():""}
+function between(t,a,b){
+  const i=t.indexOf(a); if(i<0)return "";
+  const rest=t.slice(i+a.length);
+  const j=b?rest.indexOf(b):rest.length;
+  return rest.slice(0,j<0?rest.length:j).trim();
+}
 export default async function handler(req,res){
- try{
-  const {house,number}=normalize(req.query?.bill);
-  const session="20252026";
-  const id=`${session}0${house}${number}`;
-  const url=`https://leginfo.legislature.ca.gov/faces/billTextClient.xhtml?bill_id=${id}`;
-  const r=await fetch(url,{headers:{"User-Agent":"BillMark/0.1"}});
-  const html=await r.text();
-  if(!r.ok || !/Bill Text|LEGISLATIVE COUNSEL'S DIGEST|California Legislature/i.test(html)) return res.status(404).json({error:`I couldn't find ${house} ${number} in the 2025–26 California legislative record.`});
-  const t=strip(html);
-  const title=pick(/(?:AB|SB|ACR|AJR|ACA|SCR|SJR|SCA|HR|SR|HCR|HJR)-?\s*\d+\s+(.+?)\s*\(2025-2026\)/i,t)||"California legislation";
-  const author=pick(/Introduced by\s+(.+?)\s+(?:January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2},\s+2025/i,t);
-  const published=pick(/Date Published:\s*([0-9/]+\s+[0-9:AMP]+)/i,t);
-  const status=pick(/(?:Current Status|Status)[\s:]+(.{0,180}?)(?:Bill Text|Votes|History|Bill Analysis|$)/i,t);
-  const digestAt=t.indexOf("LEGISLATIVE COUNSEL'S DIGEST");
-  let digest=digestAt>=0?t.slice(digestAt,digestAt+4200):"";
-  digest=digest.replace(/~~/g,"").trim();
-  const change=/~~/.test(html)?"The current version contains amendments to earlier language. BillMark will compare versions to identify the changes that matter.":"BillMark will compare published versions as the bill is amended.";
-  res.status(200).json({
-   id,number:`${house} ${number}`,title,author,
-   status:status||"See official record",updated:published?`Official record published ${published}`:"",
-   summary:digest?digest.slice(0,1500):"The official record is available. BillMark's plain-English interpretation layer is next.",
-   change,sourceUrl:url
-  });
- }catch(e){res.status(400).json({error:e.message})}
+  try{
+    const {house,number}=normalize(req.query?.bill);
+    const billId="20252026"+house+number;
+    const official=`https://leginfo.legislature.ca.gov/faces/billNavClient.xhtml?bill_id=${billId}`;
+    const r=await fetch(official,{redirect:"follow",headers:{"User-Agent":"Mozilla/5.0 BillMark/1.0","Accept":"text/html"}});
+    if(!r.ok) return res.status(404).json({error:`California's site returned ${r.status} for ${house} ${number}.`});
+    const html=await r.text();
+    const t=text(html);
+    if(!t.includes("CALIFORNIA LEGISLATURE") && !t.includes(`${house}-${number}`)){
+      return res.status(404).json({error:`I couldn't find ${house} ${number} in the 2025–26 California legislative record.`});
+    }
+    const header=between(t,`${house}-${number}`,`Text >>`);
+    const digestStart=t.indexOf("LEGISLATIVE COUNSEL'S DIGEST");
+    const digest=digestStart>=0?t.slice(digestStart+32,digestStart+2600):"";
+    const intro=between(t,"Introduced by ","CALIFORNIA LEGISLATURE");
+    const amended=t.match(/Amended\s+(?:IN\s+)?(?:Assembly|Senate)\s+[A-Za-z]+\s+\d{1,2},\s+\d{4}/i);
+    const title=(header.match(new RegExp(`${house}-${number}\\s+(.+?)\\(2025-2026\\)`,"i"))||[])[1] || "California legislation";
+    const summary=digest.replace(/\s+/g," ").slice(0,1500);
+    res.status(200).json({
+      id:billId,number:`${house} ${number}`,title:title.trim(),
+      author:intro.trim().slice(0,240),
+      status:amended?amended[0]:"See official record",
+      summary:summary || "Official bill text found. BillMark's plain-English interpretation is the next layer.",
+      change:"The official record includes the bill's amendment history. BillMark's next layer will compare those published versions and explain what materially changed.",
+      sourceUrl:official
+    });
+  }catch(e){
+    console.error(e);
+    res.status(500).json({error:"BillMark couldn't reach the California legislative record. Please try again."});
+  }
 }

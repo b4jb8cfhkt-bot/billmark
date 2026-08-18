@@ -1,13 +1,10 @@
-# BillMark Live Search MVP — fixed deployment package
+# BillMark Live Search — final search test package
 
-The previous package used an outdated Vercel runtime declaration. This package removes that declaration and lets Vercel auto-detect the Node.js serverless function runtime.
+This version uses the official California bill-navigation URL format:
+https://leginfo.legislature.ca.gov/faces/billNavClient.xhtml?bill_id=202520260AB222
 
-Vercel documents Node.js serverless functions as a supported deployment model and says framework/runtime detection can apply the correct settings automatically.
+The serverless function constructs the 2025–26 bill ID, fetches the official record server-side, and returns a small normalized response to the mobile page. It avoids browser CORS and avoids trying to parse a California search form.
 
-Next:
-1. Replace the files in the GitHub `billmark` repository with these files.
-2. Commit the changes.
-3. Vercel should automatically create a new deployment.
-4. Open the new deployment URL and test `AB 222`.
+Test first with AB 222. The official record is verified and contains its amendment history and Legislative Counsel's Digest.
 
-The live lookup endpoint is `/api/bill`.
+Next after this test: session disambiguation, version retrieval, AI explanation, Stripe and watch/email.
