@@ -1,57 +1,43 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>BillMark — Know where the bill stands.</title>
-<style>
-:root{--p:#6d3df5;--ink:#11182b;--muted:#697287;--line:#e7e8ee;--soft:#f7f5ff}
-*{box-sizing:border-box}body{margin:0;background:#fff;color:var(--ink);font-family:Arial,Helvetica,sans-serif}
-.wrap{max-width:720px;margin:auto;padding:25px 20px 60px}.brand{font:bold 31px Georgia,serif;letter-spacing:-1.5px;margin-bottom:90px;display:flex;align-items:center;gap:10px}.mark{width:27px;height:34px;background:var(--p);clip-path:polygon(0 0,100% 0,100% 100%,50% 76%,0 100%);border-radius:3px}
-h1{font:700 clamp(46px,12vw,76px)/.98 Georgia,serif;letter-spacing:-3px;margin:0 0 20px}h1 em{color:var(--p);font-style:normal}
-.sub{font-size:19px;color:var(--muted);line-height:1.5;margin-bottom:30px}.search{display:flex;border:2px solid var(--p);border-radius:18px;padding:7px 8px 7px 18px}input{border:0;outline:0;flex:1;min-width:0;font-size:19px}.go{width:54px;height:54px;border:0;border-radius:50%;background:var(--p);color:#fff;font-size:28px}.note{color:var(--muted);font-size:14px;margin:16px 8px}.loading{display:none;color:var(--muted);margin-top:16px}.loading.show{display:block}
-.result{display:none}.back{border:0;background:none;color:var(--p);font-weight:bold;margin:0 0 25px}.kicker{color:var(--p);font-size:13px;font-weight:bold;letter-spacing:.08em;text-transform:uppercase}.title{font:700 43px/1.03 Georgia,serif;letter-spacing:-2px;margin:7px 0}.muted{color:var(--muted);line-height:1.5}.status{display:inline-block;background:var(--soft);color:#5130c8;border-radius:999px;padding:8px 12px;font-size:14px;font-weight:bold;margin-top:12px}.section{border-top:1px solid var(--line);padding:25px 0}.section h2{font-size:13px;letter-spacing:.08em;color:var(--p);margin:0 0 12px}.answer{font-size:21px;line-height:1.5}.card{border:1px solid var(--line);border-radius:16px;padding:17px}.pay{background:var(--ink);color:#fff;border-radius:20px;padding:23px;margin-top:10px}.pay h2{font:700 29px Georgia,serif;margin:0 0 8px}.pay p{color:#cdd2df;line-height:1.45}.btn{width:100%;border:0;border-radius:13px;padding:14px;background:var(--p);color:#fff;font-weight:bold;font-size:17px}.error{background:#fff5f5;border:1px solid #efd0d0;color:#9b3838;padding:14px;border-radius:13px;margin-top:16px}
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="California legislation, explained simply.">
+  <title>BillMark — Know where the bill stands.</title>
+  <style>
+    :root{--ink:#15131b;--paper:#fffdf9;--wash:#f6f3f8;--purple:#6b3fc9;--purple-dark:#46228d;--muted:#6e6875;--line:#e5e0e8;--danger:#a02f3e}*{box-sizing:border-box}html{background:var(--paper)}body{margin:0;color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.wrap{max-width:780px;margin:0 auto;padding:30px 22px 70px}.brand{display:inline-flex;gap:9px;align-items:center;font:700 27px/1 Georgia,serif;letter-spacing:-1.2px}.mark{width:18px;height:24px;background:var(--purple);clip-path:polygon(0 0,100% 0,100% 100%,50% 78%,0 100%)}.hero{padding:clamp(78px,16vh,145px) 0 50px}h1,.bill-title,.upgrade h2{font-family:Georgia,"Times New Roman",serif;letter-spacing:-.055em}h1{font-size:clamp(52px,13vw,88px);line-height:.94;max-width:700px;margin:0 0 22px}h1 em{color:var(--purple);font-style:normal}.sub{font-size:clamp(18px,3vw,21px);line-height:1.45;color:var(--muted);margin:0 0 32px}.search{display:flex;gap:8px;padding:7px 7px 7px 19px;border:1.5px solid var(--ink);border-radius:17px;background:#fff;box-shadow:0 9px 25px #2e16300b}.search:focus-within{border-color:var(--purple);box-shadow:0 0 0 4px #6b3fc91b}input{width:100%;min-width:0;border:0;outline:0;background:transparent;font:500 19px/1.3 inherit;color:var(--ink)}input::placeholder{color:#958e99}.go{width:52px;height:52px;flex:0 0 52px;border:0;border-radius:12px;background:var(--purple);color:#fff;font-size:27px;cursor:pointer}.go:hover,.button:hover{background:var(--purple-dark)}.note,.loading,.meta,.section p{color:var(--muted);line-height:1.55}.note{font-size:14px;margin:14px 2px}.loading{display:none;margin:18px 2px}.loading.show{display:block}.error{margin-top:18px;padding:14px 16px;border-radius:13px;background:#fff4f5;border:1px solid #f2d2d7;color:var(--danger);line-height:1.4}.result{display:none;padding-top:40px}.back{padding:0;border:0;background:none;color:var(--purple);font:700 14px inherit;cursor:pointer}.eyebrow,.section h2{font-size:12px;font-weight:800;letter-spacing:.11em;color:var(--purple);margin:0 0 10px}.bill-number{font-size:17px;font-weight:800;margin:32px 0 7px}.bill-title{font-size:clamp(36px,8vw,58px);line-height:1;max-width:720px;margin:0 0 18px}.facts{display:grid;gap:9px;margin:26px 0 40px}.fact{display:flex;justify-content:space-between;gap:20px;padding:13px 0;border-bottom:1px solid var(--line);font-size:15px}.fact span{color:var(--muted);flex:0 0 auto}.fact strong{text-align:right}.section{border-top:1px solid var(--line);padding:29px 0}.section h2{margin-bottom:13px}.analysis{font:400 20px/1.52 Georgia,"Times New Roman",serif;margin:0;white-space:pre-line}.status-card{padding:19px;border:1px solid var(--line);border-radius:14px;background:#fff}.status-card strong{display:block;line-height:1.45}.status-card p{margin:10px 0 0}.disclosure{font-size:13px;color:var(--muted);margin:12px 0 0}.upgrade{padding:25px;margin:7px 0 30px;border-radius:20px;background:var(--ink);color:#fff}.upgrade h2{font-size:30px;margin:0 0 8px}.upgrade p{color:#d3cdd9;line-height:1.5;margin:0 0 17px}.button{display:block;width:100%;border:0;border-radius:11px;padding:14px;background:var(--purple);color:#fff;font:700 16px inherit;text-align:center}.button[disabled]{opacity:.8;cursor:default}.source-link{color:var(--purple);font-weight:750;text-decoration-thickness:1px;text-underline-offset:3px}@media(min-width:650px){.wrap{padding-left:34px;padding-right:34px}.facts{grid-template-columns:1fr 1fr;column-gap:40px}.fact:last-child{grid-column:span 2}}@media(max-width:420px){.wrap{padding:24px 17px 50px}.hero{padding-top:74px}.search{padding-left:14px}.bill-title{font-size:38px}}
+  </style>
 </head>
 <body>
-<div class="wrap">
-<div class="brand"><span class="mark"></span>BillMark</div>
-<div id="home">
-<h1>Know where the <em>bill</em> stands.</h1>
-<p class="sub">Plain-English explanations of California legislation.</p>
-<form class="search" id="form"><input id="q" placeholder="What bill are you curious about today?" autocomplete="off"><button class="go">→</button></form>
-<div class="note">Official California legislative data. Human explanation.</div>
-<div class="loading" id="loading">Looking up the official California record…</div>
-<div id="error"></div>
-</div>
-<div id="result" class="result">
-<button class="back" onclick="back()">← New bill</button>
-<div class="kicker" id="num"></div><div class="title" id="title"></div><p class="muted" id="author"></p>
-<div class="status" id="status"></div><div class="muted" style="font-size:13px;margin-top:9px" id="updated"></div>
-<section class="section"><h2>IN PLAIN ENGLISH</h2><div class="answer" id="summary"></div></section>
-<section class="section"><h2>WHERE IT STANDS</h2><div class="card"><b id="where"></b><p class="muted" id="meaning"></p></div></section>
-<section class="section"><h2>WHAT CHANGED?</h2><div class="answer" id="change"></div></section>
-<div class="pay"><h2>Want the full picture?</h2><p>The deeper BillMark layer will explain why it matters, what changed, what's next and what to watch.</p><h2>$9 <small style="font:14px Arial;color:#cdd2df">one-time</small></h2><button class="btn" onclick="alert('Payment is the next step. Live bill lookup is now connected.')">Unlock BillMark →</button></div>
-<section class="section"><h2>OFFICIAL SOURCE</h2><div class="muted" id="source"></div></section>
-</div>
-</div>
-<script>
-const $=id=>document.getElementById(id);
-function showResult(b){
- $("num").textContent=b.number;$("title").textContent=b.title;$("author").textContent=b.author||"";
- $("status").textContent=b.status||"Status available on official record";$("updated").textContent=b.updated||"";
- $("summary").textContent=b.summary||"BillMark found the official record. The plain-English interpretation layer is next.";
- $("where").textContent=b.status||"Current status";$("meaning").textContent="This is the procedural position shown by the official California legislative record.";
- $("change").textContent=b.change||"BillMark will compare published versions to explain the meaningful changes.";
- $("source").innerHTML=`<a target="_blank" rel="noopener" href="${b.sourceUrl}">View official California record →</a>`;
- $("home").style.display="none";$("result").style.display="block";scrollTo(0,0);
-}
-async function search(q){
- $("loading").classList.add("show");$("error").innerHTML="";
- try{const r=await fetch("/api/bill?bill="+encodeURIComponent(q));const d=await r.json();if(!r.ok)throw Error(d.error||"Bill not found.");showResult(d)}
- catch(e){$("error").innerHTML=`<div class="error">${e.message}</div>`}
- finally{$("loading").classList.remove("show")}
-}
-$("form").addEventListener("submit",e=>{e.preventDefault();const q=$("q").value.trim();if(q)search(q)});
-function back(){$("result").style.display="none";$("home").style.display="block";$("q").value="";scrollTo(0,0)}
-</script>
-</body></html>
+  <main class="wrap">
+    <a class="brand" href="/" aria-label="BillMark home"><span class="mark"></span>BillMark</a>
+    <section id="home" class="hero">
+      <h1>Know where the <em>bill</em> stands.</h1>
+      <p class="sub">California legislation, explained simply.</p>
+      <form class="search" id="form" novalidate><input id="q" name="bill" placeholder="What bill are you curious about?" inputmode="text" autocomplete="off" aria-label="California bill number"><button class="go" aria-label="Search bill" type="submit">→</button></form>
+      <p class="note">Official California legislative data. Explained by BillMark.</p>
+      <p id="loading" class="loading" role="status">Looking up the official California record…</p>
+      <div id="error" aria-live="polite"></div>
+    </section>
+    <article id="result" class="result" aria-live="polite">
+      <button class="back" type="button" id="back">← New bill</button>
+      <p id="number" class="bill-number"></p><h1 id="title" class="bill-title"></h1><p id="author" class="meta"></p>
+      <div class="facts"><div class="fact"><span>Official status</span><strong id="status"></strong></div><div class="fact"><span>Relevant date</span><strong id="statusDate"></strong></div><div class="fact"><span>Session</span><strong id="session"></strong></div></div>
+      <section class="section"><h2>BILLMARK ANALYSIS · IN PLAIN ENGLISH</h2><p id="plainEnglish" class="analysis"></p><p class="disclosure">This explanation is derived only from the official Legislative Counsel's Digest shown above.</p></section>
+      <section class="section"><h2>OFFICIAL RECORD · WHERE IT STANDS</h2><div class="status-card"><strong id="officialStatus"></strong><p id="whereItStands"></p></div></section>
+      <section class="section"><h2>BILLMARK ANALYSIS · WHAT CHANGED?</h2><p id="whatChanged" class="analysis"></p></section>
+      <section class="section"><h2>BILLMARK ANALYSIS · WHAT HAPPENS NEXT?</h2><p id="whatHappensNext" class="analysis"></p></section>
+      <section class="section"><h2>BILLMARK ANALYSIS · WHY IT MATTERS</h2><p id="whyItMatters" class="analysis"></p></section>
+      <aside class="upgrade"><h2>Want the full picture?</h2><p>Get the deeper BillMark report explaining what changed, who it affects, what’s next, and what to watch.</p><button class="button" type="button" disabled>Reports coming soon.</button></aside>
+      <section class="section"><h2>OFFICIAL SOURCE</h2><a id="source" class="source-link" target="_blank" rel="noopener noreferrer">View official California legislative record →</a></section>
+    </article>
+  </main>
+  <script>
+    const $=(id)=>document.getElementById(id); const text=(id,value)=>$(id).textContent=value||"Unavailable from the official record";
+    function result(b){text("number",b.number);text("title",b.title);$("author").textContent=b.author?`Introduced by ${b.author}`:"";text("status",b.status);text("officialStatus",b.status);text("statusDate",b.statusDate);text("session",b.session);text("plainEnglish",b.analysis?.plainEnglish);text("whereItStands",b.analysis?.whereItStands);text("whatChanged",b.analysis?.whatChanged);text("whatHappensNext",b.analysis?.whatHappensNext);text("whyItMatters",b.analysis?.whyItMatters);$("source").href=b.sourceUrl;$("home").style.display="none";$("result").style.display="block";window.scrollTo({top:0,behavior:"smooth"});}
+    async function search(query){$("error").replaceChildren();$("loading").classList.add("show");try{const response=await fetch(`/api/bill?bill=${encodeURIComponent(query)}`);const body=await response.json();if(!response.ok)throw new Error(body.error||"Couldn't find that bill.");result(body)}catch(error){const message=document.createElement("div");message.className="error";message.textContent=`${error.message} Try something like AB 222 or SB 123.`;$("error").append(message)}finally{$("loading").classList.remove("show")}}
+    $("form").addEventListener("submit",(event)=>{event.preventDefault();const value=$("q").value.trim();if(!value){$("error").innerHTML='<div class="error">Enter a California bill number, such as AB 222.</div>';return}search(value)});$("back").addEventListener("click",()=>{$("result").style.display="none";$("home").style.display="block";$("q").focus();window.scrollTo({top:0,behavior:"smooth"})});
+  </script>
+</body>
+</html>
