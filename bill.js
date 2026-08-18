@@ -13,7 +13,7 @@ export default async function handler(req,res){
  try{
   const {house,number}=normalize(req.query?.bill);
   const session="20252026";
-  const id=`${session}${house}${number}`;
+  const id=`${session}0${house}${number}`;
   const url=`https://leginfo.legislature.ca.gov/faces/billTextClient.xhtml?bill_id=${id}`;
   const r=await fetch(url,{headers:{"User-Agent":"BillMark/0.1"}});
   const html=await r.text();
