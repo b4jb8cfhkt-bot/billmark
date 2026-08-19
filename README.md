@@ -1,10 +1,24 @@
-# BillMark Live Search — final search test package
+# BillMark
 
-This version uses the official California bill-navigation URL format:
-https://leginfo.legislature.ca.gov/faces/billNavClient.xhtml?bill_id=202520260AB222
+BillMark looks up California Assembly and Senate bills through the official California Legislative Information record and displays a clearly separated official record and BillMark analysis.
 
-The serverless function constructs the 2025–26 bill ID, fetches the official record server-side, and returns a small normalized response to the mobile page. It avoids browser CORS and avoids trying to parse a California search form.
+## Architecture
 
-Test first with AB 222. The official record is verified and contains its amendment history and Legislative Counsel's Digest.
+- `index.html` — mobile-first search and bill-result interface
+- `api/bill.js` — server-side `/api/bill` endpoint with a 10-minute cache
+- `lib/bill-data.js` — bill normalization and official-record retrieval/parsing
 
-Next after this test: session disambiguation, version retrieval, AI explanation, Stripe and watch/email.
+The browser only calls `/api/bill`; California legislative retrieval happens server-side. Each successful result includes a direct link to its official California legislative record.
+
+## Local checks
+
+```sh
+node --check api/bill.js
+node --check lib/bill-data.js
+```
+
+The runtime fetches the official `leginfo.legislature.ca.gov` bill record. If that source is unavailable, the API returns a clear unavailable-source response rather than inventing bill data.
+
+## Optional AI summary
+
+Set `AI_GATEWAY_API_KEY` in the Vercel project to enable a server-side AI summary. Without it, BillMark uses the extracted official Legislative Counsel’s Digest. [AI Gateway setup](https://vercel.com/docs/ai-gateway/sdks-and-apis/openai-chat-completions).
